@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Translator 🌍</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #1abc9c;
+      --light: #ecf0f1;
+      --dark: #34495e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, var(--primary), var(--dark));
+      color: var(--light);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 40px;
+    }
+
+    .card {
+      background: #ffffff0d;
+      border: 1px solid #ffffff30;
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 700px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    textarea, select, button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      background-color: var(--light);
+      color: var(--primary);
+    }
+
+    select {
+      background-color: var(--light);
+      color: var(--primary);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      font-weight: bold;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #16a085;
+    }
+
+    .output-box {
+      background: #ffffff15;
+      border: 1px solid #ffffff20;
+      padding: 15px;
+      border-radius: 10px;
+      min-height: 80px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+
+    .label {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #ffffff66;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🌍  Translator</h1>
+    <textarea id="inputText" placeholder="Type something to translate..."></textarea>
+
+    <div class="label">Translate from:</div>
+    <select id="srcLang">
+      <option value="en">English</option>
+      <option value="fr">French</option>
+      <option value="de">German</option>
+      <option value="es">Spanish</option>
+    </select>
+
+    <div class="label">Translate to:</div>
+    <select id="destLang">
+      <option value="fr">French</option>
+      <option value="en">English</option>
+      <option value="de">German</option>
+      <option value="es">Spanish</option>
+    </select>
+
+    <button onclick="translateText()">🔄 Translate</button>
+
+    <div class="output-box" id="outputText">Translated text will appear here.</div>
+  </div>
+
+  <footer>⚡ Made by Shankar Patel with 💙</footer>
+
+  <script>
+    async function translateText() {
+      const text = document.getElementById('inputText').value.trim();
+      const srcLang = document.getElementById('srcLang').value;
+      const destLang = document.getElementById('destLang').value;
+      const outputDiv = document.getElementById('outputText');
+
+      if (!text) {
+        outputDiv.textContent = "⚠️ Please enter some text.";
+        return;
+      }
+
+      outputDiv.textContent = "⏳ Translating...";
+
+      try {
+        const res = await fetch('/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, src_lang: srcLang, dest_lang: destLang })
+        });
+
+        const data = await res.json();
+        outputDiv.textContent = data.translated_text || "⚠️ No translation received.";
+      } catch (err) {
+        outputDiv.textContent = `❌ Error: ${err.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
